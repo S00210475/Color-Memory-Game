@@ -3,6 +3,7 @@ package com.example.colormemorygame;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -30,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Sensor mSensor;
     CountDownTimer countDownTimer;
     List<String> sequence = new ArrayList<String>();
-    int sequencePosition = 0, sequenceTime = 6000, score = 0;
+    int sequencePosition = 0, sequenceTime = 4000, score = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,10 +91,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
     public void clickValidation(SensorEvent event)
     {
-        float x, y, z;
+        float x, y;
         x = Math.abs(event.values[0]); // get x value
         y = event.values[1];
-        z = Math.abs(event.values[2]);
         if(y < -2 && atBase)
         {
             colorClick(btnLeft);
@@ -160,7 +160,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
         else {
             Log.i("Test", "Oof");
-            Toast.makeText(this, answer, Toast.LENGTH_SHORT).show();
+            Intent scorePage = new Intent(MainActivity.this, GameOverScreen.class);
+            scorePage.putExtra("score", score);
+            startActivity(scorePage);     // start the new page
+            Log.i("Test", "Opening activity");
+            finish();
         }
     }
     private void setSequence() {
@@ -187,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }   // end switch
     }
     // return a number between 1 and maxValue
-    CountDownTimer commenceSequence = new CountDownTimer(sequenceTime,  1500) {
+    CountDownTimer commenceSequence = new CountDownTimer(sequenceTime,  1000) {
         public void onTick(long millisUntilFinished) {
             setSequence();
         }
