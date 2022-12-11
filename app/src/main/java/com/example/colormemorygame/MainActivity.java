@@ -29,9 +29,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     boolean positionChange, atBase, allowVibration, gameStart = false;
     private SensorManager mSensorManager;
     private Sensor mSensor;
-    CountDownTimer countDownTimer;
+    CountDownTimer countDownTimer, commenceSequence;
     List<String> sequence = new ArrayList<String>();
-    int sequencePosition = 0, sequenceTime = 4000, score = 0;
+    int sequencePosition = 0, sequenceTime = 3000, sequenceInterval = 1000, score = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,19 +53,34 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         allowVibration = getIntent().getBooleanExtra("allowVibration", true);
         //Commence game
         gameDetails.bringToFront();
+        startGame();
+    }
+    public void startGame()
+    {
         countDownTimer = new CountDownTimer(3000, 1000) {
             public void onTick(long millisUntilFinished) {
                 gameDetails.setText(String.valueOf(millisUntilFinished / 1000 + 1));
             }
             public void onFinish() {
                 gameDetails.setText(" ");
-                commenceSequence.start();
+                commenceSequence();
             }
         }.start();
     }
-    /*
-     * When the app is brought to the foreground - using app on screen
-     */
+    public void commenceSequence()
+    {
+        commenceSequence = new CountDownTimer(sequenceTime,  sequenceInterval) {
+            public void onTick(long millisUntilFinished) {
+                setSequence();
+            }
+            public void onFinish() {
+                sequence.forEach((s) -> Log.i("Test", s));
+                sequencePosition = 0;
+                gameStart = true;
+                gameDetails.setText("Commence!");
+            }
+        }.start();
+    }
     protected void onResume() {
         super.onResume();
         // turn on the sensor
@@ -157,6 +172,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             score++;
             gameDetails.setText("Score: " + score);
             sequencePosition++;
+            if(sequence.size() == sequencePosition)
+            {
+                Log.i("Test", "Sequence if statement test: " + Integer.toString(sequencePosition) + " | " + Integer.toString(sequence.size()));
+                sequence.clear();
+                sequencePosition = 0;
+                gameStart = false;
+                sequenceTime = sequenceTime + 1000;
+                Log.i("Test", Integer.toString(sequenceTime));
+                if(sequenceTime == 10000)
+                {
+                    sequenceInterval = 500; //Speeds up the game
+                }
+                startGame();
+            }
         }
         else {
             Log.i("Test", "Oof");
@@ -171,56 +200,26 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             int r = getRandom(4);
             switch (r) {
                 case 1:
-                    flashButton(btnUp);
+                    colorClick(btnUp);
                     sequence.add("Up");
                     break;
                 case 2:
-                    flashButton(btnDown);
+                    colorClick(btnDown);
                     sequence.add("Down");
                     break;
                 case 3:
-                    flashButton(btnLeft);
+                    colorClick(btnLeft);
                     sequence.add("Left");
                     break;
                 case 4:
-                    flashButton(btnRight);
+                    colorClick(btnRight);
                     sequence.add("Right");
                     break;
                 default:
                     break;
             }   // end switch
     }
-    // return a number between 1 and maxValue
-    CountDownTimer commenceSequence = new CountDownTimer(sequenceTime,  1000) {
-        public void onTick(long millisUntilFinished) {
-            setSequence();
-        }
-        public void onFinish() {
-            sequence.forEach((s) -> Log.i("Test", s));
-            sequencePosition = 0;
-            gameStart = true;
-        }
-    };
-
     private int getRandom(int maxValue) {
         return ((int) ((Math.random() * maxValue) + 1));
-    }
-
-    private void flashButton(Button btn) {
-        Handler handler = new Handler();
-        // end runnable
-        Runnable r = () -> {
-            btn.setPressed(true);
-            btn.invalidate();
-            btn.performClick();
-            Handler handler1 = new Handler();
-            Runnable r1 = new Runnable() {
-                public void run() {
-                    colorClick(btn);
-                }
-            };
-            handler1.postDelayed(r1, 600);
-        };
-        handler.postDelayed(r, 600);
     }
 }
