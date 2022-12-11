@@ -22,8 +22,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_PLAYER_NAME = "player_name";
     private static final String KEY_GAME_DATE = "game_date";
     private static final String KEY_SCORE = "score";
-
-
     /*
      * Constructor
      */
