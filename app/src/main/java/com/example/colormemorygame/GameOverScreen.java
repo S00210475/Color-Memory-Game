@@ -41,19 +41,16 @@ public class GameOverScreen extends AppCompatActivity {
         List<HiScore> allScores = db.getAllHiScores();
         List<HiScore> top5HiScores = db.getTopFiveScores();
         try {
-            //db.removeAllButTop();
+            Log.i("Test", "Checking bottomscore" );
             bottomScore = top5HiScores.get(top5HiScores.size() - 1);
-            for (HiScore s:allScores ) {
-                Log.i("Test", s.getPlayer_name() + ": " + Integer.toString(s.getScore()));
-            }
             // hiScore contains the 5th highest score
-            Log.i("Fifth Highest score: ", String.valueOf(bottomScore.getScore()) );
+            Log.i("Test", "Fifth Highest score:" + String.valueOf(bottomScore.getScore()) );
             // simple test to add a hi score
             // if 5th highest score < myCurrentScore, then insert new score
-            if (bottomScore.getScore() < score.getScore()) {
-                Log.i("Test", "Name field appear");
-                nameInput.setVisibility(GameOverScreen.this.nameInput.VISIBLE);
-            }
+                if (bottomScore.getScore() < score.getScore()) {
+                    Log.i("Test", "Name field appear");
+                    nameInput.setVisibility(GameOverScreen.this.nameInput.VISIBLE);
+                }
         }
         catch (Error err)
         {

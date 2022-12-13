@@ -3,6 +3,7 @@ package com.example.colormemorygame;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
@@ -21,6 +22,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +36,7 @@ public class Menu extends AppCompatActivity {
     ImageView stopVibrateIcon;
     boolean allowVibration = true;
     Button musicBtn;
-
+    DatabaseHandler db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +47,19 @@ public class Menu extends AppCompatActivity {
             //XML retrieval
         stopMusicIcon = findViewById(R.id.stopMusicIcon);
         musicBtn = findViewById(R.id.musicBtn);
-        //music.start(); //Plays music on startup
+            music.start(); //Plays music on startup
+        db = new DatabaseHandler(this);
+        //leaderboard initialization for first time download
+        if(db.getTopFiveScores().size() == 0)
+        {
+            Log.i("Test", "Adding hiscores" );
+            //Initialization of data
+            db.addHiScore(new HiScore("20/11/2020", "Freddy", 2));
+            db.addHiScore(new HiScore("20/11/2020", "Daniel", 3));
+            db.addHiScore(new HiScore("20/11/2020", "ABC", 15));
+            db.addHiScore(new HiScore("20/11/2020", "Hugh", 5));
+            db.addHiScore(new HiScore("22/11/2020", "Geraldine", 13));
+        }
     }
 
     public void musicSetting(View view) {
@@ -84,8 +98,6 @@ public class Menu extends AppCompatActivity {
         View popupView = inflater.inflate(R.layout.leaderboard_popup, null);
         Log.i("Test", "Test2");
         //Leaderboard setup
-        DatabaseHandler db = new DatabaseHandler(this);
-        Log.i("Test", "Test3");
 //==================================================
         String[] rows = new String[5];
         int counter = 0;
@@ -103,7 +115,5 @@ public class Menu extends AppCompatActivity {
                 .setTitle("Leaderboard")
                 .show();
 //===================================================
-        // create the popup window
-
     }
 }

@@ -40,13 +40,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 KEY_SCORE + " INTEGER NOT NULL" +
                 ")";
         db.execSQL(CREATE_HISCORES_TABLE);
-        //Initialization of data
-        /*
-        db.addHiScore(new HiScore("20 OCT 2020", "Frodo", 12));
-        db.addHiScore(new HiScore("28 OCT 2020", "Dobby", 16));
-        db.addHiScore(new HiScore("20 NOV 2020", "DarthV", 20));
-        db.addHiScore(new HiScore("20 NOV 2020", "Bob", 18));
-        db.addHiScore(new HiScore("22 NOV 2020", "Gemma", 22));*/
     }
 
     // Upgrading database
@@ -193,13 +186,5 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                         " LIMIT 5"+ ")"
         );
         db.close();
-        /*
-        DELETE
-FROM dbo.ErrorLog
-WHERE
-ErrorLogId NOT IN ( SELECT TOP ( 2 )
-                            ErrorLogId
-                    FROM    dbo.ErrorLog
-                    ORDER BY ErrorDate )*/
     }
 }
