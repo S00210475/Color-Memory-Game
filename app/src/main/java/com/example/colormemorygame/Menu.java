@@ -31,7 +31,7 @@ import de.codecrafters.tableview.toolkit.SimpleTableDataAdapter;
 import de.codecrafters.tableview.toolkit.SimpleTableHeaderAdapter;
 
 public class Menu extends AppCompatActivity {
-    MediaPlayer music;
+    PlayMusicTask music = new PlayMusicTask(this);
     ImageView stopMusicIcon;
     ImageView stopVibrateIcon;
     boolean allowVibration = true;
@@ -43,11 +43,11 @@ public class Menu extends AppCompatActivity {
         setContentView(R.layout.activity_menu);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         getSupportActionBar().hide();
-            music = MediaPlayer.create(this, R.raw.mischievous);
             //XML retrieval
         stopMusicIcon = findViewById(R.id.stopMusicIcon);
         musicBtn = findViewById(R.id.musicBtn);
-            music.start(); //Plays music on startup
+        // To execute the AsyncTask:
+        music.execute();
         db = new DatabaseHandler(this);
         //leaderboard initialization for first time download
         if(db.getTopFiveScores().size() == 0)
@@ -64,11 +64,10 @@ public class Menu extends AppCompatActivity {
 
     public void musicSetting(View view) {
         if (music.isPlaying()) {
-            music.pause();
+            music.stopMusic();
             stopMusicIcon.setVisibility(view.VISIBLE);
         } else {
-            music.getDuration();
-            music.start();
+            music.startMusic();
             stopMusicIcon.setVisibility(view.INVISIBLE);
         }
     }
@@ -88,32 +87,5 @@ public class Menu extends AppCompatActivity {
         Intent gamePage = new Intent(view.getContext(), MainActivity.class);
         gamePage.putExtra("allowVibration", allowVibration);
         startActivity(gamePage);     // start the new page
-    }
-
-    public void showLeaderboard(View view) {
-        // inflate the layout of the popup window
-        Log.i("Test", "Leaderboard method called");
-        LayoutInflater inflater = (LayoutInflater)
-                getSystemService(LAYOUT_INFLATER_SERVICE);
-        View popupView = inflater.inflate(R.layout.leaderboard_popup, null);
-        Log.i("Test", "Test2");
-        //Leaderboard setup
-//==================================================
-        String[] rows = new String[5];
-        int counter = 0;
-        for (HiScore score: db.getTopFiveScores()) {
-            rows[counter] = Integer.toString(counter + 1) + ". " + score.getPlayer_name() + " | " + Integer.toString(score.getScore()) + " | " + score.getGame_date();
-            counter++;
-        }
-        ListView listViewItems = new ListView(this);
-        ArrayAdapter arrayAdapter = new ArrayAdapter(this,
-                R.layout.item_view, R.id.itemTextView, rows);
-        Log.i("Test", "Test4");
-        listViewItems.setAdapter(arrayAdapter);
-        AlertDialog alertDialogStores = new AlertDialog.Builder(this)
-                .setView(listViewItems)
-                .setTitle("Leaderboard")
-                .show();
-//===================================================
     }
 }
