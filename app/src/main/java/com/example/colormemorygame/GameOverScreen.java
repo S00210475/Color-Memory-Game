@@ -4,6 +4,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.pm.ActivityInfo;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.renderscript.ScriptGroup;
 import android.util.Log;
@@ -81,23 +82,18 @@ public class GameOverScreen extends AppCompatActivity {
     public void showLeaderboard(View view) {
         // inflate the layout of the popup window
         Log.i("Test", "Leaderboard method called");
-        LayoutInflater inflater = (LayoutInflater)
-                getSystemService(LAYOUT_INFLATER_SERVICE);
-        View popupView = inflater.inflate(R.layout.leaderboard_popup, null);
-        Log.i("Test", "Test2");
         //Leaderboard setup
 //==================================================
         String[] rows = new String[5];
         String[] headers = {"Rank","Name", "Score", "Date"};
         int counter = 0;
         for (HiScore score: db.getTopFiveScores()) {
-            rows[counter] = Integer.toString(counter + 1) + ". " + score.getPlayer_name() + " | " + Integer.toString(score.getScore()) + " | " + score.getGame_date();
+            rows[counter] = Integer.toString(counter + 1) + ". Name: " + score.getPlayer_name() + " | Score: " + Integer.toString(score.getScore()) + " | Date: " + score.getGame_date();
             counter++;
         }
         ListView listViewItems = new ListView(this);
         ArrayAdapter arrayAdapter = new ArrayAdapter(this,
                 R.layout.item_view, R.id.itemTextView, rows);
-
 
         listViewItems.setAdapter(arrayAdapter);
         AlertDialog alertDialogStores = new AlertDialog.Builder(this)
